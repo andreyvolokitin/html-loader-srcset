@@ -50,10 +50,6 @@ module.exports = function(content) {
 	});
 	links.reverse();
 	var data = {};
-	var srcsetAttrRegexp = /\ssrcset=(["'])$/;
-	var srcsetStartFound = null;
-	var insideSrcsetPosition = -1;
-	var srcsetEnded = false;
 
 	content = [content];
 	links.forEach(function(link) {
@@ -78,33 +74,7 @@ module.exports = function(content) {
 		content.push(x.substr(0, link.start));
 	});
 	content.reverse();
-	content = content.reduce(function(accumulator, currentValue) {
-		var separator = '';
-
-		if (srcsetStartFound === null) {
-			srcsetStartFound = currentValue.match(srcsetAttrRegexp);
-
-			if (srcsetStartFound !== null) {
-				insideSrcsetPosition = 0;
-				srcsetEnded = false;
-			}
-		} else {
-			insideSrcsetPosition++;
-		}
-
-		if (srcsetStartFound !== null) {
-			if (!srcsetEnded && insideSrcsetPosition > 1 && !(/\s/).test(currentValue[0])) {
-				separator = ' ';
-
-				if (currentValue.indexOf(srcsetStartFound[1]) !== -1) {
-					srcsetEnded = true;
-				}
-			}
-
-		}
-
-		return accumulator += (separator + currentValue);
-	}, '');
+	content = content.join(' ');
 
 	if (config.interpolate === 'require'){
 
