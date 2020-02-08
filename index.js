@@ -57,6 +57,8 @@ module.exports = function(content) {
 
 		if (link.value.indexOf('mailto:') > -1 ) return;
 
+		if (link.value.endsWith('.html')) return;
+
 		var uri = url.parse(link.value);
 		if (uri.hash !== null && uri.hash !== undefined) {
 			uri.hash = null;
@@ -148,7 +150,7 @@ module.exports = function(content) {
 
  	return exportsString + content.replace(/xxxHTMLLINKxxx[0-9\.]+xxx/g, function(match) {
 		if(!data[match]) return match;
-		
+
 		var urlToRequest;
 
 		if (config.interpolate === 'require') {
@@ -156,7 +158,7 @@ module.exports = function(content) {
 		} else {
 			urlToRequest = loaderUtils.urlToRequest(data[match], root);
 		}
-		
+
 		return '" + require(' + JSON.stringify(urlToRequest) + ') + "';
 	}) + ";";
 
